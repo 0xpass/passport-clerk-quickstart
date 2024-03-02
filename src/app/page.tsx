@@ -16,6 +16,7 @@ export default function Page() {
   const [authenticating, setAuthenticating] = useState(false);
   const [registering, setRegistering] = useState(false);
   const [completingRegistration, setCompletingRegistration] = useState(false);
+  const [authenticateSetup, setAuthenticateSetup] = useState(false);
   const [signMessageLoading, setSignMessageLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageSignature, setMessageSignature] = useState("");
@@ -153,71 +154,81 @@ export default function Page() {
 
         <div className="flex flex-col mt-4 space-y-4">
           {authenticated ? (
-            <div className="flex flex-col space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="font-bold">Address</div>
-                <div>{address}</div>
+            <>
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="font-bold">Address</div>
+                  <div>{address}</div>
+                </div>
               </div>
-            </div>
-          ) : null}
-          <input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="border border-1 rounded p-2 border-black mb-4 ml-2 text-center"
-            placeholder="Enter unique username"
-          />
-          <button
-            onClick={initiateRegistration}
-            disabled={registering}
-            className="border border-1 rounded p-2 border-black mb-4 ml-2"
-          >
-            {registering && !completingRegistration
-              ? "Registering..."
-              : "Initiate Registration"}
-          </button>
-          <span className="text-green-500">
-            {completingRegistration && "Ready to complete registration"}
-          </span>
-          <button
-            onClick={completeRegistration}
-            className="border border-1 rounded p-2 border-black mb-4 ml-2"
-          >
-            {registering && completingRegistration
-              ? "Registering..."
-              : authenticating
-              ? "Authenticating..."
-              : "Complete Registration"}
-          </button>
-          <button
-            onClick={authenticate}
-            disabled={authenticating}
-            className="border border-1 rounded p-2 border-black mb-4 ml-2"
-          >
-            Authenticate
-          </button>
 
-          <div>Requires authentication to Sign Message</div>
+              {messageSignature && (
+                <div className="flex flex-col space-y-4 max-w-[60ch] break-words">
+                  <div className="font-bold">Message Signature</div>
+                  <div>{messageSignature}</div>
+                </div>
+              )}
 
-          {messageSignature && (
-            <div className="flex flex-col space-y-4">
-              <div className="font-bold">Message Signature</div>
-              <div>{messageSignature}</div>
+              <input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="border border-1 rounded p-2 border-black mb-4 ml-2 text-center"
+                placeholder="Message to sign"
+              />
+              <button
+                onClick={async () => await signMessage(message)}
+                disabled={signMessageLoading}
+                className="border border-1 rounded p-2 border-black mb-4 ml-2"
+              >
+                {signMessageLoading ? "Signing..." : "Sign Message"}
+              </button>
+            </>
+          ) : (
+            <div className="mb-12 flex flex-col space-y-2 mt-8">
+              <input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="border border-1 rounded p-2 border-black mb-4 ml-2 text-center"
+                placeholder="Enter unique username"
+              />
+              <button
+                className="border border-1 rounded p-2 border-black mb-4 ml-2"
+                onClick={() => {
+                  if (authenticateSetup) {
+                    authenticate();
+                  } else if (completingRegistration) {
+                    completeRegistration();
+                  } else {
+                    initiateRegistration();
+                  }
+                }}
+                disabled={registering || authenticating}
+              >
+                {authenticateSetup
+                  ? authenticating
+                    ? "Authenticating..."
+                    : "Authenticate"
+                  : completingRegistration
+                  ? registering
+                    ? "Finalizing Registration..."
+                    : "Click to complete registration"
+                  : registering
+                  ? "Setting up registration..."
+                  : authenticating
+                  ? "Authenticating..."
+                  : "Initiate Registration"}
+              </button>
+
+              <span
+                onClick={() => setAuthenticateSetup(!authenticateSetup)}
+                className="cursor-pointer"
+              >
+                {authenticateSetup
+                  ? "Register a Passkey?"
+                  : "Already have a passkey?"}
+              </span>
             </div>
           )}
-
-          <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="border border-1 rounded p-2 border-black mb-4 ml-2 text-center"
-            placeholder="Message to sign"
-          />
-          <button
-            onClick={async () => await signMessage(message)}
-            disabled={signMessageLoading}
-            className="border border-1 rounded p-2 border-black mb-4 ml-2"
-          >
-            Sign Message
-          </button>
         </div>
       </div>
     </div>
