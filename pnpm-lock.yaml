@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@0xpass/passport':
-    specifier: ^0.1.12
-    version: 0.1.12
+    specifier: ^0.1.13
+    version: 0.1.13
   '@0xpass/passport-viem':
     specifier: ^0.0.8
     version: 0.0.8(typescript@5.3.3)
@@ -70,8 +70,8 @@ packages:
       - zod
     dev: false
 
-  /@0xpass/passport@0.1.12:
-    resolution: {integrity: sha512-ig1tWBU0JPYMArmrkKPa7w1FdMvbf7F0n+yC0ALnnbqRT4dZ2QB38AyCzsFJ9w8A6nCa1vS8j2m6+CwrfNc/TQ==}
+  /@0xpass/passport@0.1.13:
+    resolution: {integrity: sha512-L8pBYI7IsOuMyOeYNZyiwKOyuvXPZM8xHsASU0wYehzPSNjqV5ht6v7XkQxGQsaFlnf8FBSVoDb09j8FG5DnLg==}
     dependencies:
       '@0xpass/models': 0.0.2
       axios: 1.6.7

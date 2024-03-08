@@ -1,11 +1,9 @@
-// @ts-ignore
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { Passport } from "@0xpass/passport";
-import { WebauthnSigner } from "@0xpass/webauthn-signer";
+import { useState } from "react";
 import { createPassportClient } from "@0xpass/passport-viem";
-import { http, WalletClient } from "viem";
+import { http } from "viem";
 import { mainnet } from "viem/chains";
+import { usePassport } from "./hooks/usePassport";
 
 const ENCLAVE_PUBLIC_KEY =
   "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvQOa1gkatuN6KjaS4KEWsVZAN9i4Cf0j9jlmBW5RwCJ3Bxo32McP7axt4Ev6sMWM24lpCgXgu68S9KBYRcrcEB6dRcaupFGd+ER7M518fiJ0VtCZ+XRnmwn9fqEvotp9DPZOysJkUQ60kugCRKwNvfZzAFcDiubwiqsUY2sCm943a/u9Hym51SEetG+ZFPJZFOBqwRSGkOgGZ+9Ac7ITE+bWLCZk9DlzRu+BIoDOFzXZIn+/0a0X8BnLtRY4g50aew4J+4OllQagBbhYnPMvYExYIEUx6bdjQicw0Js6s2pHr+SFAX23kQtbVOVxb5+KEGp1d+6Q4Gx7FBoyWI5qPQIDAQAB";
@@ -36,31 +34,16 @@ export default function Page() {
     userDisplayName: username,
   };
 
-  const signer = useRef<WebauthnSigner>();
-  const passport = useRef<Passport>();
-
-  useEffect(() => {
-    if (!signer.current) {
-      signer.current = new WebauthnSigner({
-        rpId: window.location.hostname,
-        rpName: "0xPass",
-      });
-    }
-
-    if (!passport.current) {
-      passport.current = new Passport({
-        scope_id: "07907e39-63c6-4b0b-bca8-377d26445172",
-        signer: signer.current!,
-        enclave_public_key: ENCLAVE_PUBLIC_KEY,
-      });
-    }
-  }, []);
+  const { passport } = usePassport({
+    ENCLAVE_PUBLIC_KEY: ENCLAVE_PUBLIC_KEY,
+    scope_id: "07907e39-63c6-4b0b-bca8-377d26445172",
+  });
 
   async function initiateRegistration() {
     setRegistering(true);
     try {
-      await passport.current?.setupEncryption();
-      const res = await passport.current?.initiateRegistration(userInput);
+      await passport.setupEncryption();
+      const res = await passport.initiateRegistration(userInput);
       console.log(res);
 
       setChallengeId(res.challenge_id);
@@ -77,15 +60,14 @@ export default function Page() {
   async function completeRegistration() {
     setRegistering(true);
     try {
-      await passport.current?.setupEncryption();
-      const res = await passport.current?.completeRegistration(
+      await passport.setupEncryption();
+      const res = await passport.completeRegistration(
         encryptedUser,
         challengeId,
         credentialCreationOptions
       );
       console.log(res);
       setCompletingRegistration(false);
-      // @ts-ignore
       if (res.result.account_id) {
         setRegistering(false);
         setAuthenticating(true);
@@ -103,9 +85,10 @@ export default function Page() {
   async function authenticate() {
     setAuthenticating(true);
     try {
-      await passport.current?.setupEncryption();
-      const [authenticatedHeader, address] =
-        await passport.current?.authenticate(userInput)!;
+      await passport.setupEncryption();
+      const [authenticatedHeader, address] = await passport.authenticate(
+        userInput
+      )!;
       setAuthenticatedHeader(authenticatedHeader);
       console.log(address);
       setAddress(address);

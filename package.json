@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@0xpass/passport": "^0.1.12",
+    "@0xpass/passport": "^0.1.13",
     "@0xpass/passport-viem": "^0.0.8",
     "@0xpass/webauthn-signer": "^0.0.3",
     "next": "14.1.0",
