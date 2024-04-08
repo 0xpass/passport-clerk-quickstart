@@ -13,17 +13,11 @@ export default function Page() {
   const [authenticated, setAuthenticated] = useState(false);
   const [authenticating, setAuthenticating] = useState(false);
   const [registering, setRegistering] = useState(false);
-  const [completingRegistration, setCompletingRegistration] = useState(false);
   const [authenticateSetup, setAuthenticateSetup] = useState(false);
   const [signMessageLoading, setSignMessageLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageSignature, setMessageSignature] = useState("");
   const [authenticatedHeader, setAuthenticatedHeader] = useState({});
-  const [challengeId, setChallengeId] = useState();
-  const [credentialCreationOptions, setCredentialCreationOptions] = useState(
-    {}
-  );
-  const [encryptedUser, setEncryptedUser] = useState();
   const [address, setAddress] = useState<string>();
 
   const alchemyUrl = process.env.NEXT_PUBLIC_ALCHEMY_URL!;
@@ -39,35 +33,13 @@ export default function Page() {
     scope_id: "07907e39-63c6-4b0b-bca8-377d26445172",
   });
 
-  async function initiateRegistration() {
+  async function register() {
     setRegistering(true);
     try {
       await passport.setupEncryption();
-      const res = await passport.initiateRegistration(userInput);
+      const res = await passport.register(userInput);
       console.log(res);
 
-      setChallengeId(res.challenge_id);
-      setEncryptedUser(res.encrypted_user);
-      setCredentialCreationOptions(res.cco_json);
-      setCompletingRegistration(true);
-    } catch (error) {
-      console.error("Error registering:", error);
-    } finally {
-      setRegistering(false);
-    }
-  }
-
-  async function completeRegistration() {
-    setRegistering(true);
-    try {
-      await passport.setupEncryption();
-      const res = await passport.completeRegistration(
-        encryptedUser,
-        challengeId,
-        credentialCreationOptions
-      );
-      console.log(res);
-      setCompletingRegistration(false);
       if (res.result.account_id) {
         setRegistering(false);
         setAuthenticating(true);
@@ -176,13 +148,11 @@ export default function Page() {
               />
               <button
                 className="border border-1 rounded p-2 border-black mb-4 ml-2"
-                onClick={() => {
+                onClick={async () => {
                   if (authenticateSetup) {
-                    authenticate();
-                  } else if (completingRegistration) {
-                    completeRegistration();
+                    await authenticate();
                   } else {
-                    initiateRegistration();
+                    await register();
                   }
                 }}
                 disabled={registering || authenticating}
@@ -191,15 +161,11 @@ export default function Page() {
                   ? authenticating
                     ? "Authenticating..."
                     : "Authenticate"
-                  : completingRegistration
-                  ? registering
-                    ? "Finalizing Registration..."
-                    : "Click to complete registration"
                   : registering
-                  ? "Setting up registration..."
+                  ? "Registering..."
                   : authenticating
                   ? "Authenticating..."
-                  : "Initiate Registration"}
+                  : "Register"}
               </button>
 
               <span

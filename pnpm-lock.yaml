@@ -6,14 +6,14 @@ settings:
 
 dependencies:
   '@0xpass/passport':
-    specifier: ^0.1.13
-    version: 0.1.13
+    specifier: 1.0.0
+    version: 1.0.0
   '@0xpass/passport-viem':
-    specifier: ^0.0.8
-    version: 0.0.8(typescript@5.3.3)
+    specifier: 1.0.0
+    version: 1.0.0(typescript@5.3.3)
   '@0xpass/webauthn-signer':
-    specifier: ^0.0.3
-    version: 0.0.3
+    specifier: 1.0.0
+    version: 1.0.0
   next:
     specifier: 14.1.0
     version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -52,12 +52,12 @@ devDependencies:
 
 packages:
 
-  /@0xpass/models@0.0.2:
-    resolution: {integrity: sha512-EH+WX3jvys5r80Ol/XcdhQ/U63mJ3NTHd9Mf0ciwxm1WM8vqlp6H7RNDiKuDBBtE6TIBP8aIxcY224XbiU5WRw==}
+  /@0xpass/models@1.0.0:
+    resolution: {integrity: sha512-LKrqzvF7m5mVEGp19Mx1JPucdrTRlrIjqcwTVAZHPxxft4BdMc2plLSWznckR+M110/kivDu92sIZXi5ZEAtHQ==}
     dev: false
 
-  /@0xpass/passport-viem@0.0.8(typescript@5.3.3):
-    resolution: {integrity: sha512-qlhFHRSLY+u0opAp2Or1RJ47DMYe9MxXxJElB3tCkqbSLwtkAUhJlA3+1rpXTnQ4g8HMrwtO9ZG4x5weRIs9HQ==}
+  /@0xpass/passport-viem@1.0.0(typescript@5.3.3):
+    resolution: {integrity: sha512-PRMRAz6JPdvvtrbF2pRbdKxVV5q/ttAEnLOjHs2goPmT3WryikIoqcjy/562D74q48LGJ3o+CY6RzEQ8pbgorQ==}
     dependencies:
       axios: 1.6.7
       node-forge: 1.3.1
@@ -70,10 +70,10 @@ packages:
       - zod
     dev: false
 
-  /@0xpass/passport@0.1.13:
-    resolution: {integrity: sha512-L8pBYI7IsOuMyOeYNZyiwKOyuvXPZM8xHsASU0wYehzPSNjqV5ht6v7XkQxGQsaFlnf8FBSVoDb09j8FG5DnLg==}
+  /@0xpass/passport@1.0.0:
+    resolution: {integrity: sha512-avMucFDDi92kLs1/hfLoK2lmFai/YHU3rlTGS7GzgyzQ/wm5dxXnrNCpUqZoTXDTD7SJUakNJ7WfvuTfG6wsKA==}
     dependencies:
-      '@0xpass/models': 0.0.2
+      '@0xpass/models': 1.0.0
       axios: 1.6.7
       elliptic: 6.5.4
       js-sha3: 0.9.3
@@ -82,10 +82,10 @@ packages:
       - debug
     dev: false
 
-  /@0xpass/webauthn-signer@0.0.3:
-    resolution: {integrity: sha512-yqvPqviYNjwbRZWqex1SwyYnIA1R9i6kqy475ReAFl9ZInYDqhO1awZG8R+B8PrGUKMtQ+vSA+iJD+viD4GhMQ==}
+  /@0xpass/webauthn-signer@1.0.0:
+    resolution: {integrity: sha512-SfPrhPvpVakx6ShhS8lWipNiE2U/jqLN5e44SlXojZ7j23UfADa13AEYX94+s4CQDu40DV4pJI0JKadpC5uMMg==}
     dependencies:
-      '@0xpass/models': 0.0.2
+      '@0xpass/models': 1.0.0
       '@github/webauthn-json': 2.1.1
       buffer: 6.0.3
     dev: false
