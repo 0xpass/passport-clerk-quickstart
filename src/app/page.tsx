@@ -4,9 +4,7 @@ import { createPassportClient } from "@0xpass/passport-viem";
 import { http } from "viem";
 import { mainnet } from "viem/chains";
 import { usePassport } from "./hooks/usePassport";
-
-const ENCLAVE_PUBLIC_KEY =
-  "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvQOa1gkatuN6KjaS4KEWsVZAN9i4Cf0j9jlmBW5RwCJ3Bxo32McP7axt4Ev6sMWM24lpCgXgu68S9KBYRcrcEB6dRcaupFGd+ER7M518fiJ0VtCZ+XRnmwn9fqEvotp9DPZOysJkUQ60kugCRKwNvfZzAFcDiubwiqsUY2sCm943a/u9Hym51SEetG+ZFPJZFOBqwRSGkOgGZ+9Ac7ITE+bWLCZk9DlzRu+BIoDOFzXZIn+/0a0X8BnLtRY4g50aew4J+4OllQagBbhYnPMvYExYIEUx6bdjQicw0Js6s2pHr+SFAX23kQtbVOVxb5+KEGp1d+6Q4Gx7FBoyWI5qPQIDAQAB";
+import { TESTNET_RSA_PUBLIC_KEY } from "@0xpass/passport";
 
 export default function Page() {
   const [username, setUsername] = useState("");
@@ -29,7 +27,7 @@ export default function Page() {
   };
 
   const { passport } = usePassport({
-    ENCLAVE_PUBLIC_KEY: ENCLAVE_PUBLIC_KEY,
+    ENCLAVE_PUBLIC_KEY: TESTNET_RSA_PUBLIC_KEY,
     scope_id: "07907e39-63c6-4b0b-bca8-377d26445172",
   });
 
