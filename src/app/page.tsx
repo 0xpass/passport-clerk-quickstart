@@ -102,9 +102,11 @@ export default function Page() {
         {authenticated ? "Authenticated" : "Not authenticated"}
       </div>
       <div className="text-center">
-        <h1 className="text-3xl font-bold underline">0xPass Quickstart</h1>
+        <h1 className="text-3xl font-bold underline">
+          Passport Protocol Quickstart
+        </h1>
         <p className="mt-2 text-lg">
-          This is a quickstart guide for the 0xPass Passport SDK.
+          This is a quickstart guide for the Passport Protocol SDK.
         </p>
 
         <div className="flex flex-col mt-4 space-y-4">

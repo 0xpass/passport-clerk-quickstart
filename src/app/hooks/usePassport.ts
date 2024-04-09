@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { WebauthnSigner } from "@0xpass/webauthn-signer";
 import { Passport } from "@0xpass/passport";
 
@@ -15,20 +16,27 @@ export function usePassport({
   passport: Passport;
   signer: WebauthnSigner;
 } {
-  const signer = new WebauthnSigner({
-    rpId: "localhost",
-    rpName: "0xPass",
-  });
+  const signerRef = useRef<WebauthnSigner | null>(null);
+  const passportRef = useRef<Passport | null>(null);
 
-  const passport = new Passport({
-    scope_id: scope_id,
-    signer: signer,
-    enclave_public_key: ENCLAVE_PUBLIC_KEY,
-    endpoint: endpoint,
-  });
+  if (!signerRef.current) {
+    signerRef.current = new WebauthnSigner({
+      rpId: process.env.NEXT_PUBLIC_RP_ID!,
+      rpName: "0xPass",
+    });
+  }
+
+  if (!passportRef.current) {
+    passportRef.current = new Passport({
+      scope_id: scope_id,
+      signer: signerRef.current,
+      enclave_public_key: ENCLAVE_PUBLIC_KEY,
+      endpoint: endpoint,
+    });
+  }
 
   return {
-    passport,
-    signer,
+    passport: passportRef.current,
+    signer: signerRef.current,
   };
 }
