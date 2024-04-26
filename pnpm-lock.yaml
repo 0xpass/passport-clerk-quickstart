@@ -5,15 +5,18 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@0xpass/key-signer':
+    specifier: 2.0.0
+    version: 2.0.0
   '@0xpass/passport':
-    specifier: 1.0.1
-    version: 1.0.1
+    specifier: 2.0.1
+    version: 2.0.1
   '@0xpass/passport-viem':
-    specifier: ^1.0.0
-    version: 1.0.0(typescript@5.3.3)
+    specifier: 2.0.0
+    version: 2.0.0(typescript@5.3.3)
   '@0xpass/webauthn-signer':
-    specifier: ^1.0.0
-    version: 1.0.0
+    specifier: 2.0.0
+    version: 2.0.0
   '@clerk/nextjs':
     specifier: ^5.0.3
     version: 5.0.3(eslint@8.57.0)(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.3)
@@ -26,6 +29,9 @@ dependencies:
   react-dom:
     specifier: ^18
     version: 18.2.0(react@18.2.0)
+  server:
+    specifier: link:@clerk/nextjs/server
+    version: link:@clerk/nextjs/server
   viem:
     specifier: ^1.16.6
     version: 1.21.4(typescript@5.3.3)
@@ -55,16 +61,22 @@ devDependencies:
 
 packages:
 
-  /@0xpass/models@1.0.0:
-    resolution: {integrity: sha512-LKrqzvF7m5mVEGp19Mx1JPucdrTRlrIjqcwTVAZHPxxft4BdMc2plLSWznckR+M110/kivDu92sIZXi5ZEAtHQ==}
+  /@0xpass/key-signer@2.0.0:
+    resolution: {integrity: sha512-Zwm8rnNbRjmmKnlB620TeIeZ0UqDcoUB4U6aAGhcY5VO98AbtFFanzeV4VGutWxj2hZtWhNUcMKP3zm9PizBRQ==}
+    dependencies:
+      '@0xpass/models': 2.0.0
     dev: false
 
-  /@0xpass/passport-viem@1.0.0(typescript@5.3.3):
-    resolution: {integrity: sha512-PRMRAz6JPdvvtrbF2pRbdKxVV5q/ttAEnLOjHs2goPmT3WryikIoqcjy/562D74q48LGJ3o+CY6RzEQ8pbgorQ==}
+  /@0xpass/models@2.0.0:
+    resolution: {integrity: sha512-VwKhhNnCbOvoE3j0NoPNVtrxxM/6J09M2qHvavV3pAz5ClZ0JilydIkjuSXLcDtnBmoubofy/laxD9/OEB5Ugg==}
+    dev: false
+
+  /@0xpass/passport-viem@2.0.0(typescript@5.3.3):
+    resolution: {integrity: sha512-bAzyYoYUqysSJCJcMwnRL2dO3O4DLVIafs8clwb8irjDNOobjsP4bN8/46pu8Iz5sUr7iNrdSyBqyL319MH52w==}
     dependencies:
       axios: 1.6.7
       node-forge: 1.3.1
-      viem: 1.21.4(typescript@5.3.3)
+      viem: 2.9.28(typescript@5.3.3)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -73,10 +85,10 @@ packages:
       - zod
     dev: false
 
-  /@0xpass/passport@1.0.1:
-    resolution: {integrity: sha512-Wh1Cn2FQ8F+zEA8uNhghUCyCVfTg2uAx8mWwAArXzAI+5aB2qF4xDnXNCrNBYQ3mKznaYylnQuBiL81y1CfGSg==}
+  /@0xpass/passport@2.0.1:
+    resolution: {integrity: sha512-3eywO5wOP8GLNsSUuzOIZi9EuIwF+Yn0xLzyIa9CGHtayIZ5+6y8fF96szD+q7gmSn4txoV5Q0VewY5t/HNAkQ==}
     dependencies:
-      '@0xpass/models': 1.0.0
+      '@0xpass/models': 2.0.0
       axios: 1.6.7
       elliptic: 6.5.4
       js-sha3: 0.9.3
@@ -85,10 +97,10 @@ packages:
       - debug
     dev: false
 
-  /@0xpass/webauthn-signer@1.0.0:
-    resolution: {integrity: sha512-SfPrhPvpVakx6ShhS8lWipNiE2U/jqLN5e44SlXojZ7j23UfADa13AEYX94+s4CQDu40DV4pJI0JKadpC5uMMg==}
+  /@0xpass/webauthn-signer@2.0.0:
+    resolution: {integrity: sha512-4yZvURGxlMBnbfEGPg7jjIFIxwpS6mNaBtDaVtH2YdYVKM6glkprCFdn8kdDEADo3dIJfzG0sL51cARzzrI50w==}
     dependencies:
-      '@0xpass/models': 1.0.0
+      '@0xpass/models': 2.0.0
       '@github/webauthn-json': 2.1.1
       buffer: 6.0.3
     dev: false
@@ -562,6 +574,20 @@ packages:
     peerDependencies:
       typescript: '>=5.0.4'
       zod: ^3 >=3.19.1
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      zod:
+        optional: true
+    dependencies:
+      typescript: 5.3.3
+    dev: false
+
+  /abitype@1.0.0(typescript@5.3.3):
+    resolution: {integrity: sha512-NMeMah//6bJ56H5XRj8QCV4AwuW6hB6zqz2LnhhLdcWVQOsXki6/Pn3APeqxCma62nXIcmZWdu1DlHWS74umVQ==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+      zod: ^3 >=3.22.0
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -3219,6 +3245,29 @@ packages:
       '@scure/bip32': 1.3.2
       '@scure/bip39': 1.2.1
       abitype: 0.9.8(typescript@5.3.3)
+      isows: 1.0.3(ws@8.13.0)
+      typescript: 5.3.3
+      ws: 8.13.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+    dev: false
+
+  /viem@2.9.28(typescript@5.3.3):
+    resolution: {integrity: sha512-/1iTg8yQlCNJ+7wSmdsBNB/vhjWqFJtTH6XZXHjGXrZnlBxAtHR5ZAr5TvTJc/2nhVIVE4BkCe5JCrIiSuZodg==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@adraffy/ens-normalize': 1.10.0
+      '@noble/curves': 1.2.0
+      '@noble/hashes': 1.3.2
+      '@scure/bip32': 1.3.2
+      '@scure/bip39': 1.2.1
+      abitype: 1.0.0(typescript@5.3.3)
       isows: 1.0.3(ws@8.13.0)
       typescript: 5.3.3
       ws: 8.13.0

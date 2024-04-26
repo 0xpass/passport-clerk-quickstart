@@ -31,6 +31,7 @@ export async function POST(req: Request) {
   if (type === "message") {
     console.log("sign message:::::");
     const signature = await passport.signMessage(stringToHex(data));
+    console.log("signature", signature);
     return NextResponse.json({ signature });
   } else if (type === "transaction") {
     const signature = await passport.signTransaction(data);

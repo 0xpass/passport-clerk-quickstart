@@ -1,114 +1,125 @@
 "use client";
 import { useState } from "react";
-import { createPassportClient } from "@0xpass/passport-viem";
-import { http } from "viem";
-import { mainnet } from "viem/chains";
-import { usePassport } from "./hooks/usePassport";
-import { TESTNET_RSA_PUBLIC_KEY } from "@0xpass/passport";
+import { SignUpButton, useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 export default function Page() {
-  const [username, setUsername] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
-  const [authenticating, setAuthenticating] = useState(false);
-  const [registering, setRegistering] = useState(false);
-  const [authenticateSetup, setAuthenticateSetup] = useState(false);
+  const { isSignedIn, isLoaded } = useUser();
   const [signMessageLoading, setSignMessageLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageSignature, setMessageSignature] = useState("");
-  const [authenticatedHeader, setAuthenticatedHeader] = useState({});
   const [address, setAddress] = useState<string>();
+  const [addressLoading, setAddressLoading] = useState(false);
 
-  const alchemyUrl = process.env.NEXT_PUBLIC_ALCHEMY_URL!;
-  const fallbackProvider = http(alchemyUrl);
-
-  const userInput = {
-    username: username,
-    userDisplayName: username,
-  };
-
-  const { passport } = usePassport({
-    ENCLAVE_PUBLIC_KEY: TESTNET_RSA_PUBLIC_KEY,
-    scope_id: "07907e39-63c6-4b0b-bca8-377d26445172",
-  });
-
-  async function register() {
-    setRegistering(true);
+  const fetchDelegatedAddress = async () => {
+    setAddressLoading(true);
     try {
-      await passport.setupEncryption();
-      const res = await passport.register(userInput);
-      console.log(res);
+      if (!addressLoading) {
+        console.log("fetchDelegatedAddress");
+        const response = await fetch("/api/get-account", {
+          method: "GET",
+        });
 
-      if (res.result.account_id) {
-        setRegistering(false);
-        setAuthenticating(true);
-        await authenticate();
-        setAuthenticating(false);
+        if (response.ok) {
+          const addresses = await response.json();
+          setAddress(addresses.result[0]);
+        }
       }
     } catch (error) {
-      console.error("Error registering:", error);
+      console.log(error);
     } finally {
-      setRegistering(false);
-      setAuthenticating(false);
+      setAddressLoading(false);
     }
-  }
+  };
 
-  async function authenticate() {
-    setAuthenticating(true);
-    try {
-      await passport.setupEncryption();
-      const [authenticatedHeader, address] = await passport.authenticate(
-        userInput
-      )!;
-      setAuthenticatedHeader(authenticatedHeader);
-      console.log(address);
-      setAddress(address);
-      setAuthenticated(true);
-    } catch (error) {
-      console.error("Error registering:", error);
-    } finally {
-      setAuthenticating(false);
+  useEffect(() => {
+    console.log("HELLO");
+    if (isSignedIn) {
+      fetchDelegatedAddress();
     }
-  }
+  }, [isSignedIn]);
 
-  function createWalletClient() {
-    return createPassportClient(authenticatedHeader, fallbackProvider, mainnet);
-  }
-
-  async function signMessage(message: string) {
+  async function delegatedSignMessage(message: string) {
+    setSignMessageLoading(true);
     try {
-      setSignMessageLoading(true);
-      const client = createWalletClient();
-      const response = await client.signMessage({
-        account: "0x00",
-        message,
+      const startTime = performance.now();
+      let response = await fetch("/api/sign", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "message",
+          data: message,
+        }),
       });
 
-      setMessageSignature(response);
+      if (response.ok) {
+        const { signature } = await response.json();
+        console.log(signature);
+        const timeTaken = performance.now() - startTime;
+        setMessageSignature({
+          signature: signature.result,
+          timeTaken: timeTaken,
+        });
+      } else {
+        throw Error(`HTTP error: ${response}`);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
       setSignMessageLoading(false);
-    } catch (error) {
-      console.error(error);
     }
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center">
+        <svg
+          className="animate-spin h-12 w-12 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M22 12c0-5.522-4.477-10-10-10-1.065 0-2.098.166-3.051.47l1.564 1.564A8 8 0 0112 4c4.418 0 8 3.582 8 8h-2z"
+          ></path>
+        </svg>
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-white text-black">
+      <p>Connected account: {addressLoading ? "Loading..." : address} </p>
+
       <div
         className={`text-2xl font-bold mb-8 ${
-          authenticated ? "text-green-500" : "text-red-500"
+          isSignedIn ? "text-green-500" : "text-red-500"
         }`}
       >
-        {authenticated ? "Authenticated" : "Not authenticated"}
+        {isSignedIn ? "Authenticated" : "Not authenticated"}
       </div>
       <div className="text-center">
         <h1 className="text-3xl font-bold underline">
-          Passport Protocol Quickstart
+          Passport Protocol with Clerk Auth Quickstart
         </h1>
         <p className="mt-2 text-lg">
           This is a quickstart guide for the Passport Protocol SDK.
         </p>
 
         <div className="flex flex-col mt-4 space-y-4">
-          {authenticated ? (
+          {isSignedIn ? (
             <>
               <div className="flex flex-col space-y-4">
                 <div className="flex items-center justify-between">
@@ -131,7 +142,7 @@ export default function Page() {
                 placeholder="Message to sign"
               />
               <button
-                onClick={async () => await signMessage(message)}
+                onClick={async () => await delegatedSignMessage(message)}
                 disabled={signMessageLoading}
                 className="border border-1 rounded p-2 border-black mb-4 ml-2"
               >
@@ -140,42 +151,15 @@ export default function Page() {
             </>
           ) : (
             <div className="mb-12 flex flex-col space-y-2 mt-8">
-              <input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="border border-1 rounded p-2 border-black mb-4 ml-2 text-center"
-                placeholder="Enter unique username"
-              />
-              <button
-                className="border border-1 rounded p-2 border-black mb-4 ml-2"
-                onClick={async () => {
-                  if (authenticateSetup) {
-                    await authenticate();
-                  } else {
-                    await register();
-                  }
-                }}
-                disabled={registering || authenticating}
+              <SignUpButton
+                mode="modal"
+                afterSignInUrl="/auth/callback"
+                afterSignUpUrl="/auth/callback"
               >
-                {authenticateSetup
-                  ? authenticating
-                    ? "Authenticating..."
-                    : "Authenticate"
-                  : registering
-                  ? "Registering..."
-                  : authenticating
-                  ? "Authenticating..."
-                  : "Register"}
-              </button>
-
-              <span
-                onClick={() => setAuthenticateSetup(!authenticateSetup)}
-                className="cursor-pointer"
-              >
-                {authenticateSetup
-                  ? "Register a Passkey?"
-                  : "Already have a passkey?"}
-              </span>
+                <button className="border border-1 rounded p-2 border-black mb-4 w-full">
+                  Sign Up / In With Clerk
+                </button>
+              </SignUpButton>
             </div>
           )}
         </div>
