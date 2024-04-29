@@ -33,7 +33,6 @@ export default function Page() {
   };
 
   useEffect(() => {
-    console.log("HELLO");
     if (isSignedIn) {
       fetchDelegatedAddress();
     }
