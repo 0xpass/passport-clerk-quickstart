@@ -10,15 +10,12 @@
   },
   "dependencies": {
     "@0xpass/key-signer": "2.0.0",
-    "@0xpass/passport": "2.0.1",
-    "@0xpass/passport-viem": "2.0.0",
-    "@0xpass/webauthn-signer": "2.0.0",
+    "@0xpass/passport": "2.0.4",
     "@clerk/nextjs": "^5.0.3",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18",
-    "server": "link:@clerk/nextjs/server",
-    "viem": "^1.16.6"
+    "server": "link:@clerk/nextjs/server"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -1,13 +1,17 @@
 "use client";
 import { useState } from "react";
-import { SignUpButton, useUser } from "@clerk/nextjs";
+import { SignUpButton, useUser, SignOutButton } from "@clerk/nextjs";
 import { useEffect } from "react";
 
 export default function Page() {
   const { isSignedIn, isLoaded } = useUser();
+  const [authenticated, setAuthenticated] = useState(false);
   const [signMessageLoading, setSignMessageLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [messageSignature, setMessageSignature] = useState("");
+  const [messageSignature, setMessageSignature] = useState({
+    signature: "",
+    timeTaken: 0,
+  });
   const [address, setAddress] = useState<string>();
   const [addressLoading, setAddressLoading] = useState(false);
 
@@ -23,6 +27,7 @@ export default function Page() {
         if (response.ok) {
           const addresses = await response.json();
           setAddress(addresses.result[0]);
+          setAuthenticated(true);
         }
       }
     } catch (error) {
@@ -33,7 +38,6 @@ export default function Page() {
   };
 
   useEffect(() => {
-    console.log("HELLO");
     if (isSignedIn) {
       fetchDelegatedAddress();
     }
@@ -56,7 +60,6 @@ export default function Page() {
 
       if (response.ok) {
         const { signature } = await response.json();
-        console.log(signature);
         const timeTaken = performance.now() - startTime;
         setMessageSignature({
           signature: signature.result,
@@ -101,14 +104,12 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-white text-black">
-      <p>Connected account: {addressLoading ? "Loading..." : address} </p>
-
       <div
         className={`text-2xl font-bold mb-8 ${
-          isSignedIn ? "text-green-500" : "text-red-500"
+          authenticated ? "text-green-500" : "text-red-500"
         }`}
       >
-        {isSignedIn ? "Authenticated" : "Not authenticated"}
+        {authenticated ? "Authenticated" : "Not authenticated"}
       </div>
       <div className="text-center">
         <h1 className="text-3xl font-bold underline">
@@ -119,7 +120,7 @@ export default function Page() {
         </p>
 
         <div className="flex flex-col mt-4 space-y-4">
-          {isSignedIn ? (
+          {authenticated ? (
             <>
               <div className="flex flex-col space-y-4">
                 <div className="flex items-center justify-between">
@@ -131,7 +132,7 @@ export default function Page() {
               {messageSignature && (
                 <div className="flex flex-col space-y-4 max-w-[60ch] break-words">
                   <div className="font-bold">Message Signature</div>
-                  <div>{messageSignature}</div>
+                  <div>{messageSignature.signature}</div>
                 </div>
               )}
 
@@ -160,6 +161,11 @@ export default function Page() {
                   Sign Up / In With Clerk
                 </button>
               </SignUpButton>
+              <SignOutButton>
+                <button className="border border-1 rounded p-2 border-black mb-4 w-full">
+                  Sign Out (Clear Cache)
+                </button>
+              </SignOutButton>
             </div>
           )}
         </div>
