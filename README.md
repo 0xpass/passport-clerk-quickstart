@@ -1,7 +1,6 @@
 # Passport-Clerk-Quickstart
 
-This project is a demonstration of integrating the Passport SDK for user registration, authentication, and message signing within a Next.js application. It showcases how to set up a basic authentication flow using Webauthn with `@0xpass/passport` and `@0xpass/webauthn-signer`, along with blockchain interactions via Viem.
-
+This project is a demonstration of integrating the Passport SDK for user registration, authentication, and message signing within a Next.js application. It showcases how to set up a basic authentication flow using Webauthn with `@0xpass/passport` and `@0xpass/key-signer`, to create a wallet and sign messages using clerk
 ## Getting Started
 
 To get the project up and running on your local machine, follow these steps:
